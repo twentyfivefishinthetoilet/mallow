@@ -1,5 +1,5 @@
 # DAY 1 (7/26/26) @ 9:16: A FRESH START
-Total time spent: 2:12
+Total time spent: 2:47
 
 today i started a new schematic (see below). the schematic contains...
 - an ESP32 S3 WROOM 1U
@@ -13,7 +13,7 @@ today i started a new schematic (see below). the schematic contains...
 
 <hr>
 
-CURRENT PCB LAYOUT (created/edited around 1:50PM)
+EARLY PCB LAYOUT (created/edited around 1:50PM)
 
 its going to change when i get components in from aliexpress (mainly my screen that i need to take measurements of), which is probably going to take forever. see that fpc connector? thats where the screen ribbon cable will sit.
 
@@ -22,6 +22,14 @@ R5 is a zero ohm resistor, i'll only add that if i want to connect that to a gpi
 that screw terminal probably isnt going to go there, i just needed the holes and that was the cleanest way to do it. a speaker is probably going to be soldered directly to the board, rather than being placed in the terminal.
 
 <img width="511" height="382" alt="Screenshot 2026-07-26 142528" src="https://github.com/user-attachments/assets/3c158481-c7eb-4586-8742-1c11530e207c" />
+
+<hr>
+
+CURRENT PCB LAYOUT (edited around 6:50PM)
+
+im gonna cave and order this and the parts today. these are all of the core components, i'll add the accessories later (aux jack, etc). 
+
+<img width="801" height="562" alt="Screenshot 2026-07-26 192315" src="https://github.com/user-attachments/assets/ba2cb775-b825-4389-930b-47c17917f6a9" />
 
 <hr>
 
