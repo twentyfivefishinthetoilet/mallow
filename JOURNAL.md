@@ -11,6 +11,7 @@ today i started a new schematic (see below). the schematic contains...
 <img width="2362" height="1672" alt="SCH_malrev2_72626" src="https://github.com/user-attachments/assets/32142d66-a870-4dc0-903d-c5ad61fa42f2" />
 
 ONE THING I LEARNED
+
 im going to put a few things here actually. 
 - did you know USB-C has dedicated pins for aux accessories? they're pins SBU1 and SBU2.
 - i learned how to make a new component in EasyEDA
