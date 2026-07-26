@@ -1,14 +1,29 @@
 # DAY 1 (7/26/26) @ 9:16: A FRESH START
-Total time spent: 1:32
+Total time spent: 2:12
 
 today i started a new schematic (see below). the schematic contains...
 - an ESP32 S3 WROOM 1U
 - an LD1117S33TR (5v -> 3.3v voltage regulator)
 - a USB-C port
 - BOOT and EN buttons
-- a sketchy ST7789 setup which i'm not confident in  
+- a sketchy ST7789 setup which i'm not confident in
+- a sketchy MAX98357A(ETE+T) setup which i'm also not confident in
 
-<img width="2362" height="1672" alt="SCH_malrev2_72626" src="https://github.com/user-attachments/assets/32142d66-a870-4dc0-903d-c5ad61fa42f2" />
+<img width="2362" height="1672" alt="SCH_malrev2_72626" src="https://github.com/user-attachments/assets/c8485e01-7afb-4b4e-aefe-bb01da0587b6" />
+
+<hr>
+
+CURRENT PCB LAYOUT (created/edited around 1:50PM)
+
+its going to change when i get components in from aliexpress (mainly my screen that i need to take measurements of), which is probably going to take forever. see that fpc connector? thats where the screen ribbon cable will sit.
+
+R5 is a zero ohm resistor, i'll only add that if i want to connect that to a gpio. it looks nicer than me wiring it to that gpio then cutting the trace if i dont want it.
+
+that screw terminal probably isnt going to go there, i just needed the holes and that was the cleanest way to do it. a speaker is probably going to be soldered directly to the board, rather than being placed in the terminal.
+
+<img width="511" height="382" alt="Screenshot 2026-07-26 142528" src="https://github.com/user-attachments/assets/3c158481-c7eb-4586-8742-1c11530e207c" />
+
+<hr>
 
 ONE THING I LEARNED
 
