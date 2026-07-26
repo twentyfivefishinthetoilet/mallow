@@ -1,5 +1,5 @@
 # DAY 1 (7/26/26) @ 9:16: A FRESH START
-HOURS: 1:32
+Total time spent: 1:32
 
 today i started a new schematic (see below). the schematic contains...
 - an ESP32 S3 WROOM 1U
