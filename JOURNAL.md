@@ -219,6 +219,8 @@ note that data can only be transferred when CS is active, or else the MCU wouldn
 
 HOW DATA WORKS: different registers are set to different functions. the controller knows what function to use by the stream of data that gets send, usually in 8 bytes, the first byte being read or write mode, while the other 7 are for which register or instruction you want to use. for example, according to the [W25Q128 FLASH MEMORY DOCUMENTATION](https://www.pjrc.com/teensy/W25Q128FV.pdf) im looking at, it says that sending 0000101 (05h) through SDI is the read status register command. it's basically binary, which i find cool
 
+<img width="693" height="423" alt="image" src="https://github.com/user-attachments/assets/a38e46a6-6a4a-4355-9469-c5ddee016d1a" />
+
 sending another 8 bits sends a parameter for that instruction, if its an instruction that takes in a parameter. somehow the slave device knows how many clock pulses to be waiting until turning off the line, i'll look into that more. the process goes from CONTROL BYTE -> DATA BYTE -> CONTROL BYTE -> DATA BYTE...
 
 i think libraries do all of the data processing under the hood. sending control byte after control byte after control byte would take up a lot of space in code, so thank god for files. heres what sending an ili9341 each and every init command would look like manually:
