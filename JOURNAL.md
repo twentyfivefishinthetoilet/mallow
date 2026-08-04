@@ -351,3 +351,55 @@ TO RECAP FROM MY RAMBLINGS:
 
 spi sends data through binary, 1 and 0 pulses at the rate of the clock speed, SCK. 
 
+# DAY 4 (8/4/26): DISPLAYING IMAGES
+Total time spent: 0:35
+
+today was a short day. i may do more later, but for now, all i did was convert an image to a bitmap, put that in a header file, and display it on the screen. i also got transparent colors working without an alpha channel.
+
+in older consoles, like the gameboy, it had to deal with the small memory that it had. the gameboy only had 4 color channels, index 0 being for "transparency". it handles transparency by skipping that color entirely when drawing an image to the screen. 
+
+BEFORE TRANSPARENCY 
+```c
+    // clear screen/fill framebuffer
+    for (int i = 0; i< 320* 240; i++){
+        fb[i] = 0xffff;
+    }
+
+    // draws the app icon while swapping the bytes for correct colors
+    for (int i = 0; i< 198 * 132; i++){
+        fb[i] = __builtin_bswap16(appicons[i]);
+    }
+    // display fb 
+    esp_lcd_panel_draw_bitmap(panel, 0, 0, 320, 240, fb);
+```
+
+<img width="3024" height="3024" alt="20260804_135018" src="https://github.com/user-attachments/assets/3fa45432-8146-4df8-b441-c4b9580ef7f8" />
+
+AFTER TRANSPARENCY 
+```c
+    // clear screen/fill framebuffer
+    for (int i = 0; i< 320* 240; i++){
+        fb[i] = 0xffff;
+    }
+
+    for (int y = 0; y < ICON_H; y++) {
+        for (int x = 0; x < ICON_W; x++) {
+            uint16_t px = appicons[y * ICON_W + x];
+            if (px != 0xf81f) { // basically saying "if this pixel's color is the one we want to be transparent,
+                fb[y * FB_W + x] = __builtin_bswap16(px);  // do this
+            }
+        }
+    }
+
+    // display fb 
+    esp_lcd_panel_draw_bitmap(panel, 0, 0, 320, 240, fb);
+```
+<img width="3024" height="3024" alt="20260804_135458" src="https://github.com/user-attachments/assets/820a5de4-ab52-459a-b275-b900283b7e3c" />
+
+...by the way, this is what happens when you dont configure the screen right. it took me probably 20 minutes just to figure out the right configuration that the screen uses for proper colors. the image of that is below.
+
+<img width="3024" height="3024" alt="20260804_132311" src="https://github.com/user-attachments/assets/2d969000-a3c5-495f-9375-576e61f327dc" />
+
+the new code will be added to breadboard_testing, titled main_804. nothing much changed, though.
+
+next up is animations! 
