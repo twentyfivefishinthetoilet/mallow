@@ -352,7 +352,7 @@ TO RECAP FROM MY RAMBLINGS:
 spi sends data through binary, 1 and 0 pulses at the rate of the clock speed, SCK. 
 
 # DAY 4 (8/4/26): DISPLAYING IMAGES
-Total time spent: 0:35
+Total time spent: 1:22
 
 today was a short day. i may do more later, but for now, all i did was convert an image to a bitmap, put that in a header file, and display it on the screen. i also got transparent colors working without an alpha channel.
 
@@ -403,3 +403,14 @@ AFTER TRANSPARENCY
 the new code will be added to breadboard_testing, titled main_804. nothing much changed, though.
 
 next up is animations! 
+
+EDIT @ 16:45 - I GOT ANIMATIONS RUNNING!!!
+
+it was really easy actually, its just drawing bitmaps to the screen with a small 20ms delay. it runs at 50fps.
+
+<img width="480" height="854" alt="20260804_162937" src="https://github.com/user-attachments/assets/937dba7d-b73b-4a7c-97e7-a5ccaca0af6e" />
+
+im proud to say that this isnt sped up. this is amazing compared to the 3 frames-per-whenever i was getting with TFT_eSPI and the Arduino IDE. here's a quick rundown of what i added:
+- offset variables for animation positioning on screen (basic math, but im proud of it)
+- a frame index to iterate through the frames properly
+- new includes for timing 
