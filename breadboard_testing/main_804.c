@@ -31,7 +31,14 @@ NOTES:
 #include "esp_lcd_panel_vendor.h" // including other headers for ease?
 
 // APP ICONS AND OTHER IMAGES (8/4/26 @ 13:09)
-#include "./icons.h"
+// #include "./icons.h"
+
+// for delays 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+// include carby frames
+#include "./frames.h"
 
 // SPI DRIVER
 #include "/home/aiden/esp-idf/components/esp_driver_spi/include/driver/spi_master.h"
@@ -51,6 +58,12 @@ NOTES:
 
 #define ICON_W 198
 #define ICON_H 132
+
+#define FRAME_WH 110
+
+#define FRAME_X_OFFSET 105 // e.g. center horizontally: (320-110)/2
+#define FRAME_Y_OFFSET 65  // e.g. center vertically: (240-110)/2
+
 #define FB_W 320
 #define FB_H 240
 
@@ -87,6 +100,9 @@ esp_lcd_panel_handle_t panel;
 // framebuffer and drawing a color to the screen (7/27/26 @ 15:24)
 uint16_t fb[240 * 320];
 
+const uint16_t* frames[16] = {carby0, carby1, carby2, carby3, carby4, carby5, carby6, carby7, carby8, carby9, carby10, carby11, carby12, carby13, carby14, carby15};
+int frame_index = 0;
+
 void app_main(void)
 {
     // SPI_DMA_CH_AUTO means use DMA 
@@ -118,16 +134,21 @@ void app_main(void)
         fb[i] = 0xffff;
     }
 
-    // fill framebuffer with the whole picture
-    for (int y = 0; y < ICON_H; y++) {
-        for (int x = 0; x < ICON_W; x++) {
-            uint16_t px = appicons[y * ICON_W + x];
-            if (px != 0xf81f) {
-                fb[y * FB_W + x] = __builtin_bswap16(px);
+    while (1){
+        for (int y = 0; y < FRAME_WH; y++) {
+            for (int x = 0; x < FRAME_WH; x++) {
+                uint16_t px = frames[frame_index][y * FRAME_WH + x];
+                if (px != 0xf81f) {
+                    fb[(y + FRAME_Y_OFFSET) * FB_W + (x + FRAME_X_OFFSET)] = __builtin_bswap16(px);
+                }
             }
         }
-    }
 
-    // display fb 
-    esp_lcd_panel_draw_bitmap(panel, 0, 0, 320, 240, fb);
+        frame_index = (frame_index + 1) % 16; // loop through frames
+        vTaskDelay(20 / portTICK_PERIOD_MS); // delay for 20ms which is like 50fps
+                                             // my goal was 30 for the games im booting off of this so this is perfect
+
+        // display fb 
+        esp_lcd_panel_draw_bitmap(panel, 0, 0, 320, 240, fb);   
+    }
 }
