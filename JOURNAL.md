@@ -414,3 +414,144 @@ im proud to say that this isnt sped up. this is amazing compared to the 3 frames
 - offset variables for animation positioning on screen (basic math, but im proud of it)
 - a frame index to iterate through the frames properly
 - new includes for timing 
+
+# DAYS 8/5 -> 8/8: PLAYING CATCH-UP
+Total time spent: ~6:00
+
+i've been working on my programming over the span of a few days now and i forgot to update my journal. i've set myself a schedule to work on Mallow 2 hours a day, and HOPEFULLY i can stick to that. if i dont, i'll be truthful with my hours logged and try to make up for it on later days i guess.
+
+enough about the boring stuff, let's get into what you're here for. over the past days, it's been a bunch of programming and some soldering. i'll split this part up in 2 sections: hardware and software
+
+**HARDWARE:**
+
+i soldered what i got in from aliexpress onto my test circuit board, mallow rev 2.1. im still waiting on capacitors, buttons, and an fpc(?) connector for the screen. the ominous wires go to a speaker, which im now realizing as i type this that it'll be a pain to get sound out of it without a file to play... hopefully i can just do some beeps and boops through i2s so i dont need an sd card. one thing i think i should have done was at least wire up some through holes to solder to so it can be a breakout board if all else fails.
+
+<img width="3024" height="3024" alt="20260808_211047" src="https://github.com/user-attachments/assets/679dbde9-2394-41b6-9178-d44807b3dc44" />
+
+i'll probably come back tomorrow if my capacitors decide to show up, solder them on, and tell you what works and what doesn't. 
+
+**SOFTWARE:**
+
+software is a pain in my behind. im just going to go over the major stuff that i added since 8/4. 
+
+VISUALS:
+
+draw_pixel basically does all of the heavy lifting here. it picks a coordinate in the 1d framebuffer, swaps the bytes of it so it presents the right color, and sends it off to the framebuffer.
+
+```c
+void draw_pixel(int x, int y, uint16_t color)
+{
+    if (x < 0 || x >= FB_W || y < 0 || y >= FB_H) return;
+
+    fb[y * FB_W + x] = __builtin_bswap16(color);;
+}
+```
+
+here's an example of it being used to draw a line.
+
+```c
+void draw_line_horizontal(int sx, int dx, int y, uint16_t color){
+    for (int i = sx; i<dx; i++){
+        draw_pixel(i, y, color);
+    }
+}
+```
+
+other functions i added included were `draw_line_vertical`, `draw_rect`, `draw_rect_filled`, and `fill_screen`. all of these lead back to draw_pixel and some for loops, so that's why im only showing the two functions above.
+
+<img width="3024" height="3024" alt="graphical_functions" src="https://github.com/user-attachments/assets/81d84f0d-9130-44bf-9317-c03a001c0255" />
+
+"GAME" LOOP:
+
+i learned that for games, you should almost always have an `update` and `render` function for organization. im using this for the main system too for some reason, i'll probably remove it later and move it into the game file that's gonna be stored in external flash memory. in short, `update` is used to update variables (ex. `player_x = speed * dt`) and render is to actually display what was updated. there's probably an `init` function that should be used that works like the `setup` function for arduino, but im just doing that in `app_main` right now.
+
+BUTTON INPUTS:
+
+finally, something simple and hardware related. i wired up 2 gigantic buttons to pins 20 and 21 and read the values in code. since im using internal pullups, the buttons are an active LOW (0). alright, back to the software... i made a button class that holds states, the button's name, and the pin number. 
+
+```c
+typedef struct {
+    int pin; int state; int last_state; char name;
+} button;
+
+button buttons[2] = {
+    {GREENPIN, 0, 0, 'M'},
+    {BLUEPIN, 0, 0, 'W'}
+};
+```
+
+...then, i made a quick helper function to get a button press.
+
+```c
+int get_btn_press(button *b){
+    b->last_state = b->state;
+    b->state = gpio_get_level(b->pin);
+    // below expands to (in lua)...
+    // if b.last_state == 1 && b.state == 0 then return 1 else return 0 end
+    return (b->last_state == 1 && b->state == 0);
+}
+```
+
+...which can be called like what i do in `render`.
+
+```c
+...
+    if (get_btn_press(&buttons[0])==1){
+        fill_screen(0x07e0);
+    }
+
+    if (get_btn_press(&buttons[1])==1){
+        fill_screen(0x001f);
+    }
+...
+```
+
+MISC: 
+
+- if you look at main_808, you'll see an array defined as `large_font_letters large_letters`. i attempted to make my own font, but then quickly backed out of it. i tried doing it on my own, then used claude, then decided to remove it entirely since i didn't want to just copy and paste code i didn't understand. i'll probably come back to making a custom font again later, maybe after i understand sprite sheets and bitmaps a little better.
+- rand_offset was also going to be used for the text to give it some character.
+- i stopped recording my exact timestamps a while ago because i kept forgetting. i think just putting in what i did for each day (unlike this entry) is enough.
+- for buttons, you need to configure gpio pins, just like in the arduino ide.
+
+```c
+    // green
+    gpio_reset_pin(buttons[0].pin);
+    gpio_set_direction(buttons[0].pin, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(buttons[0].pin, GPIO_PULLUP_ONLY);// enables internal pullup (active low)
+    // blue
+    gpio_reset_pin(buttons[1].pin);
+    gpio_set_direction(buttons[1].pin, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(buttons[1].pin, GPIO_PULLUP_ONLY);// enables internal pullup (active low)
+```
+
+the above code is in my `app_main` function. `gpio_reset_pin` resets the pin to its default state. `gpio_set_pin_direction` defines whether it's an input or output, and the other one is enabling the pullup resistors. i feel like this all could have been self explanatory, now that im typing all of this out.
+
+when i add more buttons, im probably going to do something similar to what i did for mallow rev 1...
+```cpp
+  for (const Button &btn : Buttons) {
+    pinMode(btn.pin, INPUT_PULLUP);
+  }
+```
+
+since that's c++, it'll probably be a little weirder syntax-wise to write in C, but it's doable. probably just going to do something like the following.
+
+```c
+for (int i=0;i<=MAX_BUTTONS;i++){
+    gpio_reset_pin(buttons[i].pin);
+    gpio_set_direction(buttons[i].pin, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(buttons[i].pin, GPIO_PULLUP_ONLY);// enables internal pullup (active low)
+}
+```
+**WHAT'S NEXT?**
+
+well, i finished my initial goals ("roadmap") that i set for myself in my code, but im far from done. i need to still do the following...
+
+- read flash memory (read the game file on it)
+- write to flash memory (write the game file to it)
+- make a gui in raylib to make writing to the flash easier for people to use (gui in C is the only way i know how to do it, i refuse to learn any other way) 
+- hook up a micro SD card reader, read directories from that (i hope there's a library for that)
+- get my circuit board working, design a new circuit board, etc
+
+**ONE THING I LEARNED**
+
+POINTERS ARE ACTUALLY IMPORTANT!
