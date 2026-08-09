@@ -416,7 +416,7 @@ im proud to say that this isnt sped up. this is amazing compared to the 3 frames
 - new includes for timing 
 
 # DAYS 8/5 -> 8/8: PLAYING CATCH-UP
-Total time spent: ~6:00
+Total time spent: 6:00
 
 i've been working on my programming over the span of a few days now and i forgot to update my journal. i've set myself a schedule to work on Mallow 2 hours a day, and HOPEFULLY i can stick to that. if i dont, i'll be truthful with my hours logged and try to make up for it on later days i guess.
 
