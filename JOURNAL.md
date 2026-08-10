@@ -555,3 +555,162 @@ well, i finished my initial goals ("roadmap") that i set for myself in my code, 
 **ONE THING I LEARNED**
 
 POINTERS ARE ACTUALLY IMPORTANT!
+
+# DAY 9 - 8/9/26: GAME CARTRIDGE BASICS
+Total time spent: 3:30
+
+as the title states, ive been focusing on how the game cartridges are going to work today. the workflow of the game cartridge will be the same as revision 1's: 
+
+the game cartridge has a flash memory chip on it that holds the game files. the game file gets read through spi by the esp32 s3. program-wise (yup, another programming post...) and getting a little more in depth, the lua file gets ran by the lua virtual machine / C code and will be ran constantly with render and update functions, sort of like how LOVE2D does it. 
+
+example: 
+
+lua/game file
+```lua
+counter = 0
+function update
+counter = counter + 1
+end
+
+function render
+draw.text(counter)
+end
+```
+C (app_main)
+
+```c
+...
+// GET AND CALL UPDATE
+lua_getglobal(L, "update");
+if (lua_isfunction(L, -1)) {
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        tft.println(lua_tostring(L, -1));
+        lua_pop(L, 1);
+      }
+} else {
+    lua_pop(L, 1);
+}
+// GET AND CALL RENDER
+sprite.fillSprite(0xffff);
+lua_getglobal(L, "render");
+if (lua_isfunction(L, -1)) {
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        tft.println(lua_tostring(L, -1));
+        lua_pop(L, 1);
+     }
+} else {
+  lua_pop(L, 1);
+}
+...
+```
+
+...i just stole the C code from my revision 1 code. i'll explain what the lua part of it means in that section of this log.
+
+this log will be split into two parts again: flash memory and lua.
+
+FLASH MEMORY
+
+after writing all of this, i found out that littefs exists. im just going to stick to raw bytes for the moment, since it's more low level and interesting.  i'll go line by line of the flash part and explain what it does.
+
+```c
+// flash macros
+#define FLASH_CS   8
+#define FLASH_SCK  48
+#define FLASH_MOSI 18
+#define FLASH_MISO 17
+
+#define SCRIPT_BASE_ADDR 0x000000
+#define SCRIPT_LEN_ADDR  0x000000 // 4 bytes for length
+#define SCRIPT_DATA_ADDR 0x000004 // script starts right after
+```
+two sets of macros here: pin definitions and addresses for memory. script len address stores the length of the script, as you probably could have guessed. this is necessary because the w25q128 just stores raw bytes, it doesn't know when a string ends. flash cs, sck, mosi, and miso macros are just pin definitions. 
+
+```c
+spi_device_interface_config_t flash_dev_conf = {
+    .clock_speed_hz = 20 * 1000 * 1000,
+    .mode = 0, // what other spi modes are there? beats me
+    .spics_io_num = FLASH_CS,
+    .queue_size = 4,
+    .command_bits = 8,   // the instruction byte 
+    .address_bits = 24,  // the w25q128 uses 24 bit addresses
+};
+```
+sets up the flash spi line
+
+```c
+// sets up and attaches flash memory to the bus
+void flash_init(void){
+    esp_err_t err;
+    err = spi_bus_initialize(SPI3_HOST, &flash_bus_conf, SPI_DMA_CH_AUTO);
+    printf("spi_bus_initialize: %s\n", esp_err_to_name(err));
+    err = spi_bus_add_device(SPI3_HOST, &flash_dev_conf, &flash_handle);
+    printf("spi_bus_add_device: %s\n", esp_err_to_name(err));
+}
+```
+error handling was added here because spi wasnt working right, though i probably should have added it in the first place. 
+
+```c
+void flash_write_enable(void){
+    spi_transaction_ext_t t = {0};
+    t.base.cmd = 0x06;
+    t.base.flags = SPI_TRANS_VARIABLE_ADDR;
+    t.address_bits = 0;
+    spi_device_polling_transmit(flash_handle, (spi_transaction_t*)&t);
+}
+```
+i'm going to explain this once. for the rest of the functions, i'll just be going over what command does what (or what it claims to do in documentation). 
+
+the `SPI_TRANS_VARIABLE_ADDR` flag tells the program to ignore the original 24 address bits defined in `flash_dev_conf` and use the following 0 bits defined the line after. the write enable command 06h doesn't have any "parameters", so it's just that singular byte that's called. 
+
+`spi_device_polling_transmit` actually transmits the data that was just defined. 
+
+as for the actual write command, it's defined in the documentation as so:
+
+```
+8.2.1 Write Enable (06h)
+The Write Enable instruction (Figure 5) sets the Write Enable Latch (WEL) bit in the Status Register to a 1.
+The WEL bit must be set prior to every Page Program, Quad Page Program, Sector Erase, Block Erase, Chip Erase, Write Status Register and Erase/Program Security Registers instruction.
+```
+
+here's a little todo for me: come back and explain the rest. the other main commands are 05h, 9Fh, 02h and 20h. cut me some slack, it's 10:10 at night as im typing this and im tired.
+
+LUA
+
+this one's a little more fun. lua uses a stack (and also indexes starting at 1 for some reason) and it's interesting to work with the pop functions. it reminds me of a simpler version of assembly.
+
+| func. | usage | ex. |
+| :--- | :--- | :--- |
+| `luaL_newstate()` | creates the interpreter | `lua_State* L = luaL_newstate();` | 
+| `luaL_openlibs(lua_State* L)` | loads std libraries (math, string, tables, etc) | `luaL_openlibs(L);` |
+| `luaL_dofile(lua_State* L, char *path)` | executes a lua script | `luaL_dofile(L, path.c_str());` |
+| `luaL_dostring(lua_State* L, char *cmd)` | executes a line of lua code directly | `int r = luaL_dostring(L, cmd.c_str());` |
+| `lua_register(lua_State* L, char *lua_function, function c_function);` | exposes C++ function to Lua code so lua can call lua_function | `lua_register(L, "drawText", lua_drawText);` |  
+| `lua_pcall(lua_State* L, int expected_args, int expected_return, int error_handling)` | executes a single function with the arguments provided | `lua_pcall(L, 2, 1, 0)`|
+
+that table is from revision 1 notes, still applies here... just excuse the C++ notation for the examples (ex.)
+
+remember how i said i'll explain what my lua functions do in the flash section? i sure didnt. let me explain what each function does without repeating myself from what i wrote in the table. 
+
+```c
+// GET AND CALL UPDATE
+lua_getglobal(L, "update");
+if (lua_isfunction(L, -1)) {
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        tft.println(lua_tostring(L, -1));
+        lua_pop(L, 1);
+      }
+} else {
+    lua_pop(L, 1);
+}
+```
+
+the workflow is this: C calls a lua function (in this case, "update") -> checks if "update" is a function -> error checks while calling update/pcall. if the function is ran without any issues, it pops/removes it from the stack. if not, it prints an error then removes it from the stack. 
+
+it's a lot to take in at once! this guy can do a much better job at explaining it than me, it's who i watched to learn this anyways: https://youtu.be/4l5HdmPoynw?si=0h_c781tNLyucszX
+
+whatever that guy didnt explain, i googled. 
+
+MISC:
+- lua indexes start at 1
+- -1 index is also the top of the stack
+
