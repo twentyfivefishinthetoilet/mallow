@@ -671,6 +671,7 @@ as for the actual write command, it's defined in the documentation as so:
 The Write Enable instruction (Figure 5) sets the Write Enable Latch (WEL) bit in the Status Register to a 1.
 The WEL bit must be set prior to every Page Program, Quad Page Program, Sector Erase, Block Erase, Chip Erase, Write Status Register and Erase/Program Security Registers instruction.
 ```
+<img width="789" height="292" alt="image" src="https://github.com/user-attachments/assets/228d2a7e-d0e4-44ba-a0d4-e58c0e06cfda" />
 
 here's a little todo for me: come back and explain the rest. the other main commands are 05h, 9Fh, 02h and 20h. cut me some slack, it's 10:10 at night as im typing this and im tired.
 
