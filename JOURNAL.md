@@ -714,4 +714,4 @@ whatever that guy didnt explain, i googled.
 MISC:
 - lua indexes start at 1
 - -1 index is also the top of the stack
-
+- i just realized i havent been tracking time on hackatime. i hope these logs for my programming count, but if they dont, it's not the end of the world. im going to start tracking my time for this project on lookout tomorrow (or the next time i program. cut me some slack, it's my first hack club project!)
