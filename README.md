@@ -9,7 +9,7 @@ mallow has a detatchable controller, leaving you open to customizing your own co
 i tried adding a bunch of comments in my source code so everyone knows where everything is, as well as how it works. 
 
 ## stardance judges, PLEASE READ!!!!!!!!!!!
-- mallow_bom.csv should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
+- BOM files should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
 - worked on easyeda (pro) for the PCB designs, hence the .epro2 project file in the hardware folder.
 - programs/FINAL is where my final program/firmware/c file will be. i uploaded many different files for backups and keeping track of progress 
 
