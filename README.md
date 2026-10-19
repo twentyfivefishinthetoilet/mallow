@@ -10,6 +10,8 @@ i tried adding a bunch of comments in my source code so everyone knows where eve
 
 i made mallow as a programming and hardware challenge, as well as to make my own games on a small device easily.
 
+in order to get the firmware running on your computer correctly, please drop all of the files inside ./main/lua to the root ./main folder. i put lua in a separate folder so people can easily look over the code i wrote. find all of the lua files here: https://github.com/lua/lua. 
+
 ## stardance judges, PLEASE READ!!!!!!!!!!!
 - the bom should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
 - worked on easyeda (pro) for the PCB designs, hence the .epro2 project file in the hardware folder.
