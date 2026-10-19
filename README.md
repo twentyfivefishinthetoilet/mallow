@@ -12,6 +12,11 @@ i made mallow as a programming and hardware challenge, as well as to make my own
 
 in order to get the firmware running on your computer correctly, please drop all of the files inside ./main/lua to the root ./main folder. i put lua in a separate folder so people can easily look over the code i wrote. find all of the lua files here: https://github.com/lua/lua. 
 
+## dependencies 
+you'll need...
+- the esp-idf
+- all the components in bom.csv unless stated otherwise
+
 ## stardance judges, PLEASE READ!!!!!!!!!!!
 - the bom should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
 - worked on easyeda (pro) for the PCB designs, hence the .epro2 project file in the hardware folder.
