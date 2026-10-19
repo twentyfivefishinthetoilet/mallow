@@ -53,3 +53,6 @@ the cartridge has a lua file stored on the chip. the esp32 s3 reads that file an
 
 <img src="./readme_assets/taken_apart.png" />
 
+digital final assembly
+<br>
+<img src="./readme_assets/final_assm.png" />
