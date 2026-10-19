@@ -39,14 +39,14 @@
 #include "warning.h"
 
 // ESP-IDF DRIVERS
-#include "/home/aiden/esp-idf/components/esp_driver_gpio/include/driver/gpio.h" // handles gpio
-#include "/home/aiden/esp-idf/components/esp_driver_spi/include/driver/spi_master.h" // spi driver
-#include "/home/aiden/esp-idf/components/log/include/esp_log.h"
+#include "driver/gpio.h" // handles gpio
+#include "driver/spi_master.h" // spi driver
+#include "esp_log.h"
 
 // FOR ST7789
-#include "/home/aiden/esp-idf/components/esp_lcd/include/esp_lcd_panel_io.h"
-#include "/home/aiden/esp-idf/components/esp_lcd/include/esp_lcd_panel_ops.h"
-#include "/home/aiden/esp-idf/components/esp_lcd/include/esp_lcd_panel_vendor.h"
+#include "esp_lcd_panel_io.h"
+#include "esp_lcd_panel_ops.h"
+#include "esp_lcd_panel_vendor.h"
 
 // FOR SD CARD
 // https://docs.espressif.com/projects/esp-techpedia/en/latest/esp-friends/get-started/case-study/storage-examples/sd-card-examples/sdmmc-example.html
@@ -68,8 +68,8 @@
 #include "lualib.h"
 
 // FOR SLEEP FUNCTIONS
-#include "/home/aiden/esp-idf/components/freertos/FreeRTOS-Kernel/include/freertos/FreeRTOS.h"
-#include "/home/aiden/esp-idf/components/freertos/FreeRTOS-Kernel/include/freertos/task.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 // FOR DELTA TIME
 #include "esp_timer.h"
