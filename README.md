@@ -8,10 +8,13 @@ mallow has a detatchable controller, leaving you open to customizing your own co
 
 i tried adding a bunch of comments in my source code so everyone knows where everything is, as well as how it works. 
 
+i made mallow as a programming and hardware challenge, as well as to make my own games on a small device easily.
+
 ## stardance judges, PLEASE READ!!!!!!!!!!!
-- BOM files should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
+- the bom should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
 - worked on easyeda (pro) for the PCB designs, hence the .epro2 project file in the hardware folder.
-- programs/FINAL is where my final program/firmware/c file will be. i uploaded many different files for backups and keeping track of progress 
+- firmware/FINAL is where my final files will be. i uploaded many different files for backups and keeping track of progress 
+- assembly and chassis modeling can be found on lapse, the only thing that's not on there is my painting.
 
 ## current features/components
 mallow has 3 parts: the cartridge, the controller, and the main board
@@ -38,15 +41,15 @@ i have to admit, this one is pretty bare board. it has the same W25Q128 flash me
 
 oh, it also has an smd led to tell you there's power. that's about it. 
 
+### power pak / power supply (external wiring)
+<img src="./readme_assets/external_wiring.png" />
+
 ## workflow 
 the cartridge has a lua file stored on the chip. the esp32 s3 reads that file and runs it constantly in a loop, as well as checking for button inputs from the controller.
 
 ## gallery 
-this is the first ever mallow board. 
 
-<img width="500" height="350" alt="Screenshot_20260404_194022" src="https://github.com/user-attachments/assets/f9a3ef72-b7df-41bc-97d2-bf6f67db48fd" />
+<img src="./readme_assets/final_assembly.png" />
 
-originally, it was going to have detachable controllers, just less accessible. you'd have to connect it via flex cable. i changed that now to rows of female header pins. the only issue with this change is that i dont have the side controller "slots" anymore. 
-
-**a little todo note for me. i still need to add new pcb photos, photos of it working, export actual design files and bom. https://stardance.hackclub.com/resources/shipping-hardware**
+<img src="./readme_assets/taken_apart.png" />
 
