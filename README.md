@@ -120,6 +120,20 @@ if that doesn't return any errors, then you're set! you should get a no cartridg
 if you think you're ready to make your own cartridge, i have a guide on how to do that in [firmware/cartridge_programmer](https://github.com/twentyfivefishinthetoilet/mallow/tree/main/firmware/cartridge_programmer). there's a BOM, a wiring diagram for hooking up your cartridges, and more. in order to get that running, you'll basically have to do this whole thing all over again, but with cartridge_programmer (create project, set target, flash monitor: it should be easier now that you know what to do). it's not an intensive guide on how to program your own game yet, so i encourage you to look at the `stub_functions` and `draw_functions.c` to... well, figure it out yourself. sorry, i'll make a guide about that soon. 
 
 ## gallery 
+
+### pcb
+**main board**
+<img width="1184" height="729" alt="image" src="https://github.com/user-attachments/assets/a2c782d1-3f6d-4bfb-b86e-56a81f2455e4" />
+
+**controller**
+<img width="1254" height="651" alt="image" src="https://github.com/user-attachments/assets/9c06d8b2-4f7d-4495-9cc2-e6e902a091c6" />
+
+**cartridge**
+<img width="306" height="394" alt="image" src="https://github.com/user-attachments/assets/585d2f91-f448-4727-8f61-613c38e36ad1" />
+
+*find my project file in the `pcb` directory!*
+
+**misc**
 <img src="./readme_assets/taken_apart.png" />
 
 digital final assembly
