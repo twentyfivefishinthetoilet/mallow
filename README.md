@@ -129,10 +129,11 @@ if you think you're ready to make your own cartridge, i have a guide on how to d
 <img width="1254" height="651" alt="image" src="https://github.com/user-attachments/assets/9c06d8b2-4f7d-4495-9cc2-e6e902a091c6" />
 
 **cartridge**
+
 <img width="306" height="394" alt="image" src="https://github.com/user-attachments/assets/585d2f91-f448-4727-8f61-613c38e36ad1" />
 
 *find my project file in the `pcb` directory!*
-
+<br>
 **misc**
 <img src="./readme_assets/taken_apart.png" />
 
