@@ -132,11 +132,12 @@ if you think you're ready to make your own cartridge, i have a guide on how to d
 
 <img width="306" height="394" alt="image" src="https://github.com/user-attachments/assets/585d2f91-f448-4727-8f61-613c38e36ad1" />
 
-*find my project file in the `pcb` directory!*
-<br>
+*find my project file in the `pcb` directory!
+
 **misc**
+
 <img src="./readme_assets/taken_apart.png" />
 
 digital final assembly
-<br>
+
 <img src="./readme_assets/final_assm.png" />
