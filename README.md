@@ -6,58 +6,120 @@ mallow is an open source handheld game console that runs off of real cartridges 
 
 mallow has a detatchable controller, leaving you open to customizing your own controllers with a custom button layout. if you wanted to get more advanced, add a sensor! since it's open source, you can edit the source code to do so. 
 
-i tried adding a bunch of comments in my source code so everyone knows where everything is, as well as how it works. 
-
-i made mallow as a programming and hardware challenge, as well as to make my own games on a small device easily.
-
-in order to get the firmware running on your computer correctly, please drop all of the files inside ./main/lua to the root ./main folder. i put lua in a separate folder so people can easily look over the code i wrote. find all of the lua files here: https://github.com/lua/lua. 
-
-## dependencies 
-you'll need...
-- the esp-idf
-- all the components in bom.csv unless stated otherwise
-
-## stardance judges, PLEASE READ!!!!!!!!!!!
-- the bom should probably be opened in excel or google sheets. it's not pretty when you view it as a text file, but it'll get the job done. 
-- worked on easyeda (pro) for the PCB designs, hence the .epro2 project file in the hardware folder.
-- firmware/FINAL is where my final files will be. i uploaded many different files for backups and keeping track of progress 
-- assembly and chassis modeling can be found on lapse, the only thing that's not on there is my painting.
-
-## current features/components
-mallow has 3 parts: the cartridge, the controller, and the main board
-
-### main board
-- 2.8" ST7789 IPS display 
-    - i honestly didnt know what ips meant before buying this, but it turns out it's a good thing: ips offers a better viewing angle than the ili9341 (or any tft display) would
-- SD card slot
-    - dont know if it'll work when it gets shipped for stardance, but it's there!
-- GPIO expander 
-    - expands... gpios. seriously though, it opens up slots for more buttons or maybe a sensor or two. right now (rev 2.4), it's only using half of the extra slots. 
-- 2x10 cartridge + controller slots
-    - im grasping at straws here
-- other/notes
-    - mcu: esp32 s3 wroom 1u (n16r8)
-### controller 
-- x6 6mm by 6mm push buttons (UP, DOWN, LEFT, RIGHT, M, W)
-- x2 3mm by 6mm push buttons (SPECIAL, HOME)
-- onboard W25Q128 flash memory
-    - remember how you could transfer Miis from one Wii console to another by sending it to the Wiimote, then connecting that Wiimote to the desired console? that's the idea here. at some point i'm going to program it to save game data, but it can really be used to save whatever if it's programmed right.
-
-### game cartridge
-i have to admit, this one is pretty bare board. it has the same W25Q128 flash memory chip on it that holds a "Lua file". that "Lua file" is read by the esp32 s3 by using the lua vm and runs update() and render() functions, sort of like LOVE2D. 
-
-oh, it also has an smd led to tell you there's power. that's about it. 
-
-### power pak / power supply (external wiring)
-<img src="./readme_assets/external_wiring.png" />
-
-## workflow 
-the cartridge has a lua file stored on the chip. the esp32 s3 reads that file and runs it constantly in a loop, as well as checking for button inputs from the controller.
-
-## gallery 
-
 <img src="./readme_assets/final_assembly.png" />
 
+## current features/components
+- detatchable controllers for easier storage and, in the future, data transfer between Mallow devices
+- a 320x240 resolution 2.8" display.
+- reads and plays your custom game cartridges
+
+## so you want to build mallow yourself!
+### dependencies 
+you'll need...
+- the esp-idf and its dependencies ([Windows](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/windows-setup.html), [Linux](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/linux-setup.html), and [Mac](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/macos-setup.html))
+- all the components in bom.csv unless stated otherwise
+
+### hardware check!
+make sure you have everything installed onto the main board correctly, we wouldn't want any shorts. to run it off of battery, after you're done flashing the program, check out the external wiring guide below. 
+
+#### power pak / power supply (external wiring)
+<img src="./readme_assets/external_wiring.png" />
+
+got all of your 3D printed parts? assembly guide is here: https://www.youtube.com/watch?v=m0DVB6CYGms
+
+*if you don't have your parts, find them in cad/STEP or cad/STL*
+
+
+### setting up firmware
+- download everything from firmware/FINAL.
+- create a new ESP-IDF project called mallow_rev2 (`idf.py create-project mallow_rev2`). if it's not named this, you'll have to change line 6 of your /FINAL/`CMakeLists.txt` file to match the name (`project(mallow_rev2)`). please note that the ESP-IDF runs off of two `CMakeLists.txt` files: one in the root of your project folder and one inside `main`. 
+- replace any duplicate files you see on your system and that you downloaded from here, mainly `main/mallow_rev2.c` and `main/CMakeLists.txt`. move `warning.h` into `main` as well.
+- after you've done that, move all of your draw functions into a folder called `draw_functions` and place that folder in `main` as well. 
+- move all Lua files out of `/lua` and into your `/main` directory with your `mallow_rev2.c` file.
+  
+by now you should have all of your source files, and you should have a directory tree that looks like this: 
+```
+mallow_rev2/
+├── CMakeLists.txt
+└── main/
+    ├── draw_functions/
+    │   ├── draw_functions.c
+    │   └── draw_functions.h
+    ├── CMakeLists.txt
+    ├── mallow_rev2.c
+    ├── lapi.c
+    ├── lapi.h
+    ├── lauxlib.c
+    ├── lauxlib.h
+    ├── lbaselib.c
+    ├── lcode.c
+    ├── lcode.h
+    ├── lcorolib.c
+    ├── lctype.c
+    ├── lctype.h
+    ├── ldblib.c
+    ├── ldebug.c
+    ├── ldebug.h
+    ├── ldo.c
+    ├── ldo.h
+    ├── ldump.c
+    ├── lfunc.c
+    ├── lfunc.h
+    ├── lgc.c
+    ├── lgc.h
+    ├── linit.c
+    ├── liolib.c
+    ├── ljumptab.h
+    ├── llex.c
+    ├── llex.h
+    ├── llimits.h
+    ├── lmathlib.c
+    ├── lmem.c
+    ├── lmem.h
+    ├── loadlib.c
+    ├── lobject.c
+    ├── lobject.h
+    ├── lopcodes.c
+    ├── lopcodes.h
+    ├── lopnames.h
+    ├── loslib.c
+    ├── lparser.c
+    ├── lparser.h
+    ├── lprefix.h
+    ├── lstate.c
+    ├── lstate.h
+    ├── lstring.c
+    ├── lstring.h
+    ├── lstrlib.c
+    ├── ltable.c
+    ├── ltable.h
+    ├── ltablib.c
+    ├── ltm.c
+    ├── ltm.h
+    ├── lua.h
+    ├── lua.hpp
+    ├── luaconf.h
+    ├── lualib.h
+    ├── lundump.c
+    ├── lundump.h
+    ├── lutf8lib.c
+    ├── lvm.c
+    ├── lvm.h
+    ├── lzio.c
+    ├── lzio.h
+    └── warning.h
+```
+*i used https://tree.nathanfriend.com for the tree diagram. yes, i could have used the command line, but it wouldn't paste correctly here :(*
+
+now it's time to configure the ESP-IDF! plug in mallow through the USB-C port, open the command line, cd into your project directory, then...
+- `idf.py set-target esp32s3` (configures the program to be compiled onto an esp32-s3, what mallow uses.)
+- `idf.py flash monitor` (flashes the program onto the esp32-s3 and monitors it through the serial monitor. think of it like pressing Compile on the Arduino IDE and opening the serial monitor.)
+
+if that doesn't return any errors, then you're set! you should get a no cartridge inserted screen. 
+
+if you think you're ready to make your own cartridge, i have a guide on how to do that in [firmware/cartridge_programmer](https://github.com/twentyfivefishinthetoilet/mallow/tree/main/firmware/cartridge_programmer). there's a BOM, a wiring diagram for hooking up your cartridges, and more. in order to get that running, you'll basically have to do this whole thing all over again, but with cartridge_programmer (create project, set target, flash monitor: it should be easier now that you know what to do). it's not an intensive guide on how to program your own game yet, so i encourage you to look at the `stub_functions` and `draw_functions.c` to... well, figure it out yourself. sorry, i'll make a guide about that soon. 
+
+## gallery 
 <img src="./readme_assets/taken_apart.png" />
 
 digital final assembly
